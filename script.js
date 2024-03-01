@@ -101,12 +101,8 @@ async function start() {
       // Draw name and date/time
       ctx.fillStyle = "white";
       ctx.font = "16px Segoe UI";
-      ctx.fillText(`Name: ${matchedLabel}`, box.x, box.y + box.height + 20);
-      ctx.fillText(
-        `Date and Time: ${dateTimeString}`,
-        box.x,
-        box.y + box.height + 40
-      );
+      ctx.fillText(`${matchedLabel}`, box.x, box.y + box.height + 20);
+      ctx.fillText(`${dateTimeString}`, box.x, box.y + box.height + 40);
     });
 
     // Convert the canvas to data URL
