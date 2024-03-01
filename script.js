@@ -94,8 +94,8 @@ async function start() {
       const dateTimeString = new Date().toLocaleString();
 
       // Draw face border
-      ctx.strokeStyle = "red";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 1;
       ctx.strokeRect(box.x, box.y, box.width, box.height);
 
       // Draw name and date/time
