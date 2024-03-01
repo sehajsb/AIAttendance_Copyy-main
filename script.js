@@ -47,9 +47,11 @@ async function start() {
       );
       results.forEach((result, i) => {
         const box = resizedDetections[i].detection.box;
-        const drawBox = new faceapi.draw.DrawBox(box, {
-          label: result.toString(),
-        });
+
+        // Create a DrawBox with white color
+        const drawBox = new faceapi.draw.DrawBox(box, { color: "white" });
+
+        // Draw the box on the canvas
         drawBox.draw(canvas);
 
         // Draw name and date/time on the live preview
@@ -63,13 +65,11 @@ async function start() {
         const labelY = box.y + box.height + 20;
 
         canvas.getContext("2d").fillStyle = "white";
-        canvas.getContext("2d").font = "16px Segoe UI";
+        canvas.getContext("2d").font = "bold 14px Segoe UI";
+        canvas.getContext("2d").fillText(`${matchedLabel}`, labelX, labelY);
         canvas
           .getContext("2d")
-          .fillText(`Name: ${matchedLabel}`, labelX, labelY);
-        canvas
-          .getContext("2d")
-          .fillText(`Date and Time: ${dateTimeString}`, labelX, labelY + 20);
+          .fillText(`${dateTimeString}`, labelX, labelY + 20);
       });
     }, 100); // Adjust interval as needed
   });
@@ -107,7 +107,6 @@ async function start() {
         box.x,
         box.y + box.height + 40
       );
-
     });
 
     // Convert the canvas to data URL
