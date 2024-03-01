@@ -63,7 +63,7 @@ async function start() {
         const labelY = box.y + box.height + 20;
 
         canvas.getContext("2d").fillStyle = "white";
-        canvas.getContext("2d").font = "16px Arial";
+        canvas.getContext("2d").font = "16px Segoe UI";
         canvas
           .getContext("2d")
           .fillText(`Name: ${matchedLabel}`, labelX, labelY);
@@ -100,7 +100,7 @@ async function start() {
 
       // Draw name and date/time
       ctx.fillStyle = "white";
-      ctx.font = "16px Arial";
+      ctx.font = "16px Segoe UI";
       ctx.fillText(`Name: ${matchedLabel}`, box.x, box.y + box.height + 20);
       ctx.fillText(
         `Date and Time: ${dateTimeString}`,
@@ -108,12 +108,6 @@ async function start() {
         box.y + box.height + 40
       );
 
-      // Create a text document with the person's name and the date and time
-      const fileContent = `Name: ${matchedLabel}\nDate and Time: ${dateTimeString}`;
-      saveTextToFile(
-        fileContent,
-        `D:\\Models\\${matchedLabel}\\${dateTimeString}.txt`
-      );
     });
 
     // Convert the canvas to data URL
@@ -136,7 +130,7 @@ function loadLabeledImages() {
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
-      for (let i = 1; i <= 2; i++) {
+      for (let i = 1; i <= 3; i++) {
         const img = await faceapi.fetchImage(
           `https://raw.githubusercontent.com/sehajsb/AIAttendance_Copyy-main/master/labeled_images/${label}/${i}.jpg`
         );
@@ -168,5 +162,3 @@ async function saveTextToFile(content, filePath) {
     console.error("Error saving text to file:", err);
   }
 }
-
-
