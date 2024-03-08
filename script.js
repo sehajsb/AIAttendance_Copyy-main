@@ -16,7 +16,7 @@ async function start() {
   // Load labeled images for training the face recognition model
   labeledFaceDescriptors = await loadLabeledImages();
 
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.55);
   let canvas;
 
   navigator.mediaDevices
@@ -45,31 +45,75 @@ async function start() {
       const results = resizedDetections.map((d) =>
         faceMatcher.findBestMatch(d.descriptor)
       );
+      // Define the periods
+      const periods = [
+        { name: "1", startTime: "08:30", endTime: "09:05" },
+        { name: "2", startTime: "09:05", endTime: "09:40" },
+        { name: "3", startTime: "09:40", endTime: "10:50" },
+        { name: "4", startTime: "10:50", endTime: "12:00" },
+        { name: "Lunch", startTime: "12:00", endTime: "13:00" },
+        { name: "6", startTime: "13:00", endTime: "14:20" },
+        { name: "7", startTime: "14:20", endTime: "14:55" },
+        { name: "8", startTime: "14:55", endTime: "15:30" },
+      ];
+
       results.forEach((result, i) => {
         const box = resizedDetections[i].detection.box;
-
-        // Create a DrawBox with white color
-        const drawBox = new faceapi.draw.DrawBox(box, { color: "white" });
-
-        // Draw the box on the canvas
+        const drawBox = new faceapi.draw.DrawBox(box, {});
         drawBox.draw(canvas);
 
-        // Draw name and date/time on the live preview
         const bestMatch = faceMatcher.findBestMatch(
           resizedDetections[i].descriptor
         );
         const matchedLabel = bestMatch.label;
-        const dateTimeString = new Date().toLocaleString();
+        const confidence = bestMatch.distance;
+        const confidencePercentage = Math.round((1 - confidence) * 100);
 
         const labelX = box.x;
         const labelY = box.y + box.height + 20;
 
+        // Get current date and time
+        const currentDate = new Date();
+        const dateTimeString = `${
+          currentDate.getMonth() + 1
+        }/${currentDate.getDate()}/${currentDate.getFullYear()} | ${currentDate.toLocaleTimeString(
+          "en-US",
+          { hour12: false }
+        )}`;
+
+        // Determine the current period
+        let currentPeriod = "Unknown";
+        const currentTime = new Date().toLocaleTimeString("en-US", {
+          hour12: false,
+        });
+        periods.forEach((period) => {
+          const startTime = new Date(`2000-01-01T${period.startTime}`);
+          const endTime = new Date(`2000-01-01T${period.endTime}`);
+          const currentTimeFormatted = new Date(`2000-01-01T${currentTime}`);
+          if (
+            currentTimeFormatted >= startTime &&
+            currentTimeFormatted <= endTime
+          ) {
+            currentPeriod = period.name;
+          }
+        });
+
         canvas.getContext("2d").fillStyle = "white";
-        canvas.getContext("2d").font = "bold 14px Segoe UI";
-        canvas.getContext("2d").fillText(`${matchedLabel}`, labelX, labelY);
+        canvas.getContext("2d").font = "bold 12px Segoe UI";
+        canvas
+          .getContext("2d")
+          .fillText(
+            `${matchedLabel} | ${confidencePercentage}% `,
+            labelX,
+            labelY
+          );
+
         canvas
           .getContext("2d")
           .fillText(`${dateTimeString}`, labelX, labelY + 20);
+        canvas
+          .getContext("2d")
+          .fillText(`Period: ${currentPeriod}`, labelX, labelY + 40);
       });
     }, 100); // Adjust interval as needed
   });
@@ -82,7 +126,7 @@ async function start() {
     captureCanvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
 
-    // Draw face border, name, and date/time on the captured image
+    // Draw face border, name, percentage, and date/time on the captured image
     const detections = await faceapi
       .detectAllFaces(captureCanvas)
       .withFaceLandmarks()
@@ -91,6 +135,8 @@ async function start() {
       const box = detection.detection.box;
       const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
       const matchedLabel = bestMatch.label;
+      const confidence = bestMatch.distance; // Confidence is the distance between descriptors
+      const confidencePercentage = (1 - confidence) * 100; // Convert confidence to percentage
       const dateTimeString = new Date().toLocaleString();
 
       // Draw face border
@@ -98,11 +144,16 @@ async function start() {
       ctx.lineWidth = 1;
       ctx.strokeRect(box.x, box.y, box.width, box.height);
 
-      // Draw name and date/time
+      // Draw name, confidence percentage, and date/time
       ctx.fillStyle = "white";
       ctx.font = "16px Segoe UI";
       ctx.fillText(`${matchedLabel}`, box.x, box.y + box.height + 20);
-      ctx.fillText(`${dateTimeString}`, box.x, box.y + box.height + 40);
+      ctx.fillText(
+        `Confidence: ${confidencePercentage.toFixed(2)}%`,
+        box.x,
+        box.y + box.height + 40
+      );
+      ctx.fillText(`${dateTimeString}`, box.x, box.y + box.height + 60);
     });
 
     // Convert the canvas to data URL
