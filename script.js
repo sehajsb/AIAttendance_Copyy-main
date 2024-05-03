@@ -2,6 +2,35 @@ const video = document.getElementById("video");
 const captureButton = document.getElementById("captureButton");
 let labeledFaceDescriptors; // Define variable to store labeled face descriptors
 
+// Function to save face data to local storage
+function saveFaceDataToLocalStorage(
+  label,
+  confidence,
+  dateTime,
+  period,
+  isLate
+) {
+  // Retrieve existing data from local storage or initialize an empty array
+  let storedData = JSON.parse(localStorage.getItem("faceData")) || [];
+
+  // Add new face data
+  storedData.push({
+    label,
+    confidence,
+    dateTime,
+    period,
+    isLate, // Add the late flag
+  });
+
+  // Save updated data to local storage
+  localStorage.setItem("faceData", JSON.stringify(storedData));
+}
+
+// Retrieve stored data from local storage
+function getStoredFaceData() {
+  return JSON.parse(localStorage.getItem("faceData")) || [];
+}
+
 Promise.all([
   faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
   faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
@@ -83,6 +112,7 @@ async function start() {
 
         // Determine the current period
         let currentPeriod = "Unknown";
+        let isLate = false; // Flag to indicate if the person is late
         const currentTime = new Date().toLocaleTimeString("en-US", {
           hour12: false,
         });
@@ -95,6 +125,11 @@ async function start() {
             currentTimeFormatted <= endTime
           ) {
             currentPeriod = period.name;
+            // Check if the person is late (more than 10 minutes past the start time)
+            const lateTime = new Date(startTime.getTime() + 10 * 60000); // Add 10 minutes to start time
+            if (currentTimeFormatted > lateTime) {
+              isLate = true;
+            }
           }
         });
 
@@ -114,8 +149,20 @@ async function start() {
         canvas
           .getContext("2d")
           .fillText(`Period: ${currentPeriod}`, labelX, labelY + 40);
+
+        // Only save if matchedLabel is defined
+        if (matchedLabel) {
+          // Save the detected data to local storage
+          saveFaceDataToLocalStorage(
+            matchedLabel,
+            confidencePercentage,
+            dateTimeString,
+            currentPeriod,
+            isLate // Save the late flag
+          );
+        }
       });
-    }, 100); // Adjust interval as needed
+    }, 300); // Adjust interval as needed
   });
 
   // Event listener for capture button
@@ -168,8 +215,57 @@ async function start() {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    // Retrieve stored face data
+    const storedData = getStoredFaceData();
+    storedData.forEach((data) => {
+      console.log(
+        `Label: ${data.label}, Confidence: ${data.confidence}, Date/Time: ${data.dateTime}, Period: ${data.period}`
+      );
+    });
   });
 }
+
+const express = require("express");
+const mysql = require("mysql");
+const { CloudSQL } = require("@google-cloud/sql");
+
+const app = express();
+
+// Create a Cloud SQL client
+const sqlClient = new CloudSQL({
+  connectionLimit: 10,
+  user: "Parker",
+  password: "2008",
+  database: "Attendance_School",
+  socketPath: "dynamic-camp-415217:us-central1:attendai", // Replace with your Cloud SQL instance connection name
+});
+
+// API endpoint to insert face data into the database
+app.post("/api/face-data", async (req, res) => {
+  // Parse request body to extract face data
+  const { label, confidence, dateTime } = req.body;
+
+  try {
+    // Insert face data into the database
+    await sqlClient.query(
+      "INSERT INTO face_data (label, confidence, dateTime) VALUES (?, ?, ?)",
+      [label, confidence, dateTime]
+    );
+    res.status(200).json({ message: "Face data inserted successfully" });
+  } catch (error) {
+    console.error("Error inserting face data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Other API endpoints for CRUD operations
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 function loadLabeledImages() {
   const labels = ["Parker", "Sehaj"];

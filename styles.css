@@ -1,0 +1,77 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Attendance table styles */
+.attendance-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.attendance-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.attendance-table th {
+  background-color: #4285f4;
+  color: #fff;
+  font-weight: 700;
+}
+
+.attendance-table td {
+  border-bottom: 1px solid #ddd;
+}
+
+.attendance-table tr:last-child td {
+  border-bottom: none;
+}
+
+.attendance-table td:nth-child(2) {
+  font-weight: bold;
+}
+
+.attendance-table td:nth-child(3),
+.attendance-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+/* Styling links */
+a {
+  color: #4285f4;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #1c5ffa;
+}
