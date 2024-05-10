@@ -10,6 +10,32 @@ body {
   background-color: #f4f4f4;
 }
 
+/* CSS to center text in table cells */
+td {
+  text-align: center; /* Center-align text in all table cells */
+}
+
+/* CSS to override center alignment for the first cell containing the profile image and name */
+td .profile-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Add padding to the left of the name text */
+td .profile-container span {
+  padding-left: 10px; /* Adjust the padding as needed */
+}
+
+/* CSS for hover effect */
+tr:hover {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.05
+  ); /* Darken the background color on hover */
+}
+
 .container {
   max-width: 800px;
   margin: 50px auto;

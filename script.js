@@ -2,6 +2,8 @@ const video = document.getElementById("video");
 const captureButton = document.getElementById("captureButton");
 let labeledFaceDescriptors; // Define variable to store labeled face descriptors
 
+let lastSavedTimestamps = {}; // Object to store last saved timestamps for each person and period
+
 // Function to save face data to local storage
 function saveFaceDataToLocalStorage(
   label,
@@ -13,17 +15,29 @@ function saveFaceDataToLocalStorage(
   // Retrieve existing data from local storage or initialize an empty array
   let storedData = JSON.parse(localStorage.getItem("faceData")) || [];
 
-  // Add new face data
-  storedData.push({
-    label,
-    confidence,
-    dateTime,
-    period,
-    isLate, // Add the late flag
-  });
+  // Check if the current time is in a new period for this person
+  const lastSavedTimestamp =
+    lastSavedTimestamps[label] && lastSavedTimestamps[label][period];
+  const currentTime = new Date().getTime();
+  if (!lastSavedTimestamp || currentTime - lastSavedTimestamp >= 10 * 60000) {
+    // Add new face data
+    storedData.push({
+      label,
+      confidence,
+      dateTime,
+      period,
+      isLate, // Add the late flag
+    });
 
-  // Save updated data to local storage
-  localStorage.setItem("faceData", JSON.stringify(storedData));
+    // Update last saved timestamp for this person and period
+    if (!lastSavedTimestamps[label]) {
+      lastSavedTimestamps[label] = {};
+    }
+    lastSavedTimestamps[label][period] = currentTime;
+
+    // Save updated data to local storage
+    localStorage.setItem("faceData", JSON.stringify(storedData));
+  }
 }
 
 // Retrieve stored data from local storage
@@ -112,7 +126,7 @@ async function start() {
 
         // Determine the current period
         let currentPeriod = "Unknown";
-        let isLate = false; // Flag to indicate if the person is late
+        let isLate = ""; // Flag to indicate if the person is late
         const currentTime = new Date().toLocaleTimeString("en-US", {
           hour12: false,
         });
@@ -128,7 +142,11 @@ async function start() {
             // Check if the person is late (more than 10 minutes past the start time)
             const lateTime = new Date(startTime.getTime() + 10 * 60000); // Add 10 minutes to start time
             if (currentTimeFormatted > lateTime) {
-              isLate = true;
+              isLate = "";
+              const lateMinutes = Math.round(
+                (currentTimeFormatted - lateTime) / 60000
+              ); // Calculate late minutes
+              isLate = `Late (${lateMinutes}m)`;
             }
           }
         });
