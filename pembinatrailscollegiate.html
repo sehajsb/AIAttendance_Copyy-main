@@ -9,17 +9,100 @@
       href="images/a-letter-gradient-logo-icon-vector-32406329.jpg"
       type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Reset styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+        padding-top: 50px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #343a40;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      .attendance-table {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+      }
+
+      .attendance-table h2 {
+        font-size: 1.8rem;
+        color: #343a40;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .attendance-table ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .attendance-table li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .attendance-table li:last-child {
+        border-bottom: none;
+      }
+
+      .attendance-table span {
+        color: #6c757d;
+        font-weight: bold;
+      }
+
+      .attendance-table .refresh-text {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <h1>Pembina Trails Collegiate</h1>
-      <div id="attendanceInfo" class="attendance-table"></div>
+      <h1>Attendai Global Link</h1>
+      <div id="attendanceInfo" class="attendance-table">
+        <h2>Pembina Trails Collegiate</h2>
+        <ul>
+          <li><span>Day 1:</span> 80% Attendance</li>
+          <li><span>Day 2:</span> 85% Attendance</li>
+          <li><span>Day 3:</span> 82% Attendance</li>
+          <li><span>Day 4:</span> 88% Attendance</li>
+          <li><span>Day 5:</span> 90% Attendance</li>
+        </ul>
+        <p class="refresh-text">
+          This page will refresh automatically every 10 seconds.
+        </p>
+      </div>
     </div>
     <script src="attendance.js"></script>
     <script>
       setTimeout(function () {
         window.location.reload();
-      }, 10000); // 30 seconds in milliseconds
+      }, 10000); // 10 seconds in milliseconds
     </script>
   </body>
 </html>

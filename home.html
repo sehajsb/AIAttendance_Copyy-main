@@ -4,106 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Attendai Global Link</title>
-    <link
-      rel="icon"
-      href="images/a-letter-gradient-logo-icon-vector-32406329.jpg"
-      type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
     <style>
-      body {
-        font-family: Arial, sans-serif;
+      /* Reset styles */
+      * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        background-color: #f0f0f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
       }
 
       .container {
         max-width: 1200px;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+        margin: auto;
       }
 
       h1 {
-        font-size: 36px;
-        color: #333;
-        margin-bottom: 20px;
+        font-size: 3.5rem;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
       }
 
       .school-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
         list-style: none;
         padding: 0;
-        margin: 20px 0;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
       }
 
-      .school-list li {
-        margin: 0 10px;
-        margin-bottom: 20px;
-        width: 200px;
-        height: 200px;
-        position: relative;
-        border-radius: 10px;
+      .school-card {
+        background-color: #fff;
+        border-radius: 20px;
         overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .school-card:hover {
+        transform: translateY(-10px);
       }
 
       .school-card img {
         width: 100%;
-        height: 100%;
+        height: 250px;
         object-fit: cover;
-        transition: transform 0.3s ease;
-        transform: scale(2);
-      }
-
-      .school-card:hover img {
-        transform: scale(2.1);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
       }
 
       .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        padding: 30px;
+        text-align: center;
       }
 
       .overlay h3 {
-        font-size: 0px;
-        margin-bottom: 10px;
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: bold;
       }
 
       .overlay a {
+        display: inline-block;
+        background-color: #e74c3c;
         color: #fff;
         text-decoration: none;
-        font-weight: bold;
-        font-size: 16px;
-        border: 2px solid #fff;
-        padding: 8px 20px;
-        border-radius: 5px;
+        padding: 15px 30px;
+        border-radius: 10px;
         transition: background-color 0.3s ease;
+        font-size: 1.3rem;
+        font-weight: bold;
+        letter-spacing: 1px;
       }
 
       .overlay a:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-
-      .school-card:hover .overlay {
-        opacity: 1;
+        background-color: #c0392b;
       }
     </style>
   </head>
@@ -114,9 +99,11 @@
       <ul class="school-list">
         <li>
           <div class="school-card">
-            <img src="images/SfMNrEVC_400x400.jpg" alt="Oak Park" />
+            <img
+              src="images/École secondaire Oak Park High School.png"
+              alt="Oak Park" />
             <div class="overlay">
-              <h3>Oak Park</h3>
+              <h3>Oak Park High School</h3>
               <a href="#" id="oakParkLink">View Attendance</a>
             </div>
           </div>
@@ -136,7 +123,7 @@
         </li>
         <li>
           <div class="school-card">
-            <img src="images/vincent_massey.jpg" alt="Vincent Massey" />
+            <img src="images/VMC 4C Logo_2016.jpg" alt="Vincent Massey" />
             <div class="overlay">
               <h3>Vincent Massey</h3>
               <a href="#" id="vincentMasseyLink">View Attendance</a>
@@ -145,7 +132,7 @@
         </li>
         <li>
           <div class="school-card">
-            <img src="images/shaftesbury.jpg" alt="Shaftesbury" />
+            <img src="images/Titan Head.jpg" alt="Shaftesbury" />
             <div class="overlay">
               <h3>Shaftesbury</h3>
               <a href="#" id="shaftesburyLink">View Attendance</a>
@@ -153,16 +140,8 @@
           </div>
         </li>
       </ul>
-
-      <!-- Attendance table for Pembina Trails Collegiate -->
-      <div id="attendanceInfo" class="attendance-table" style="display: none">
-        <!-- Include attendance table content here -->
-        <h2>Pembina Trails Collegiate</h2>
-        <!-- Table content goes here -->
-      </div>
-
-      <!-- You can add similar divs for other schools' attendance tables -->
     </div>
+    <!-- You can add similar divs for other schools' attendance tables -->
     <script src="attendance.js"></script>
   </body>
 </html>
